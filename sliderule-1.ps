@@ -1,0 +1,1918 @@
+%!PS
+
+% Postscript Slide Rule engine
+% Copyright Derek Pressnall 2011
+
+% This file is being made available under the terms of the
+% GNU GPL Version 3 license.
+
+/definerules {
+
+% To define a rule, specify a rule as follows:
+% /rulename [ stator-size slide-size stator-size ] (scale list) definerule def
+
+% where "/rulename" is what you want to name this rule,
+% [ size size size ] contains the size of each of the rule parts (top
+% stator, slide, bottom stator), and (scale list) is a list of scales
+% from the definitions below.  The format of the scale list is
+% (stator scales [ slide scales ] stator scales).  Special characters:
+% A colon ":" flips the rule over to specify the other side's layout
+% A pipe symbol "|" draws a solid line between the give nscales
+% A "-" or "+" after a scale overrides the scale's default oriention
+%   ("+" is tick marks pointing up, and "-" is pointing down)
+% A "^" symbol following a scale means not to do a line break.  Useful
+%   if you have two partial scale definitions that need to appear on the same
+%   rule line.
+% Some sample scales are listed below.
+
+% Keuffel and Esser Log-Log Duplex Decitrig (4081)
+/KE4081-3 [14 mm 13 mm 14 mm] (LL01 K A [ B | T ST S ] D L- LL1- : LL02 LL03 DF [ CF CIF | CI C ] D LL3- LL2-) definerule def
+
+% Hemmi 266
+/H266 [15 mm 15 mm 15 mm] (H266LL03 H266LL01^ LL02B LL2B- A [ B BI CI C ] D L- S T- : eeXl eeXc eeF eer1 eeP^ [ eer2^ eeQ eeLi eeCf eeCz ] eeL eeZ eeFo blank) definerule def
+ 
+% Hemmi 266 ThinkGeek variant
+/H266-TG [13 mm 22 mm 13 mm] (H266LL03 H266LL01^ LL02B LL2B- A [ B Sh1 Sh2 Th Ch CI C ] D L- P blank : eeXl eeXc eeF eer1 eeP^ [ eer2^ eeQ eeLi ST S | T- eeCf eeCz ] eeL eeZ eeFo blank) definerule def
+
+/ultralog [18.5 mm 37 mm 18.5 mm] (LL00 LL01 LL02 LL03 DF [ CF CIF | Sh1- Sh2- Ch- Th- | Ln L CI C ] D LL3- LL2- LL1- LL0- : Const R1 R2 | K A [ B | T- blank ST- S- | P H1 H2 | CI C ] D DI Q1- Q2- Q3-) definerule def
+
+
+/Kelon 
+16 dict begin
+    /Constscale Constscale ddup begin
+	/titlegap .5 cm def
+    currentdict end def
+    /CFscale CFscale ddup begin
+	/formula {log 10 .5 exp log sub} def
+        /beginscale 3 def
+	/constants
+	{10 .5 exp formula} SymFont1 MedF () ticklength 0 get /Ntop-HalfTick scaleCvars
+	dup ddup dup begin
+	    /cvalue {10 .5 exp 10 mul formula} def
+	end 
+	constants aload length 2 add array astore def
+    currentdict end def
+    /DFscale DFscale ddup begin
+	/formula {log 10 .5 exp log sub} def
+        /beginscale 3 def
+	/constants
+	{10 .5 exp formula} SymFont1 MedF () ticklength 0 get /Ntop-HalfTick scaleCvars
+	dup ddup dup begin
+	    /cvalue {10 .5 exp 10 mul formula} def
+	end 
+	constants aload length 2 add array astore def
+    currentdict end def
+    /CIFscale CIFscale ddup begin
+	/beginscale 3 def
+	/formula {1 exch div 100 mul 10 .5 exp div log} def
+	/constants  [
+	{10 .5 exp formula} SymFont1 MedF () ticklength 0 get /Ntop-HalfTick scaleCvars
+	dup ddup dup begin
+	    /cvalue {10 .5 exp 10 mul formula} def
+	end 
+	] def
+%	dup ddup dup begin
+%	    /cvalue {10 .5 exp 10 mul formula} def
+%	end 
+%	constants aload length 2 add array astore def
+    currentdict end def
+    /Cfrontscale Cscale ddup begin
+	/constants [] def
+    currentdict end def
+    /CIscale CIscale ddup begin
+	/constants [] def
+    currentdict end def
+    /DIscale DIscale ddup begin
+	/constants [] def
+    currentdict end def
+    /Dfrontscale Dscale ddup begin
+	/constants [] def
+    currentdict end def
+    /Cbackscale Cscale ddup begin
+	/constants [
+	{PI log} NumFont1 LargeF (\203) ticklength 0 get /Ntop-HalfTick scaleCvars
+	{PI 180 60 60 mul mul div 1000000 mul log} SymFont1 LargeF (\242\242) ticklength 0 get /Ntop-HalfTick scaleCvars
+	{PI 180 60 mul div 10000 mul log} SymFont1 LargeF (\242) ticklength 0 get /Ntop-HalfTick scaleCvars
+	{180 PI div 10 div log} NumFont1 SmallF (R) ticklength 0 get /Ntop-HalfTick scaleCvars
+	{2 PI mul log} NumFont1 SmallF (2\203) ticklength 0 get /Ntop-HalfTick scaleCvars
+	] def
+    currentdict end def
+    /Dbackscale Cbackscale ddup begin
+        /tickdir -1 def
+        /title (D) def
+    currentdict end def
+
+    [ 18.5 mm 18.5 mm 18.5 mm ] (KE-LL03 KE-LL02 KE-LL01 KE-LL00 DF [ CF CIF | L CI Cfront ] Dfront KE-LL0- KE-LL1- KE-LL2- KE-LL3- : Const Sh1 Sh2 Th A [ B | KE-T KE-ST KE-S Cback ] Dback DI K- R1 R2) definerule
+    dup begin
+	/nodefaulttitleRIGHT true def
+	/titlegap .8 cm def
+    end
+end def
+
+% Going to modify some scales for this next rule
+% Enclosing modifications in a new dict def so that these mods affect this
+% rule definition only.
+
+8 dict begin
+  /Cscale Cscale ddup begin
+    /constants [
+        {2 10 exp 10 3 exp div formula} NumFont1n SmallF () ticklength 0 get /Ntop-QtrTick scaleCvars
+        {2 20 exp 10 6 exp div formula} NumFont1n SmallF () ticklength 0 get /Ntop-QtrTick scaleCvars
+        {2 30 exp 10 9 exp div formula} NumFont1n SmallF () ticklength 0 get /Ntop-QtrTick scaleCvars
+	{PI formula} SymFont1 MedF (\160) ticklength 0 get /Ntop-HalfTick scaleCvars
+    ] def
+    currentdict
+  end def
+  /Dscale Dscale ddup dup /constants Cscale /constants get put def
+
+%/DSP-01 [16 mm 16 mm 13 mm] (LL1 | LL01- K A [ B ST S | T- C ] DI D L | Ln- : DFm LL02 | LL03- DF [ CF R1 | R2- CI C ] D  P LL2 | LL3-) definerule
+/DSP-01 [16 mm 16 mm 13 mm] (P DFm+ K A [ B ST S | T- CI ] D DI L | Ln- : LL01 LL02 LL03 DF [ CF CIF | CI C ] D  LL3- LL2- LL1-) definerule
+end def
+
+% A circular rule
+/test-circular [ 12 mm 16 mm ] (K | A C [ D CI B L ] : LL3 LL2 C [ D S | T ST ] ) definerule def
+test-circular /circular 4 inch put
+
+} def
+
+/printrules {
+% This section lists which scales you want to print.
+
+% specify "fullcutlines" to print solid lines between the slide and stators,
+% otherwise specify "partialcutlines" to pint short line segments on the
+% left / right side as cutting guides.
+% Or specify "nocutlines" to not have any cut lines at all.
+
+fullcutlines
+
+% Now print out the rules
+%H266 printrule
+
+%H266-TG printrule
+
+
+%test-circular printrule
+
+%DSP-01 printrule
+
+ultralog printrule
+
+/startoffset 2 mm def
+Kelon printrule
+
+%KE4081-3 printrule
+} def
+
+/scaledefs {
+% This is the long way of defining a scale -- here for example purposes.
+% The rest of the scales either use a shorthand notation, or modify existing
+% scales.
+/Cscale 32 dict begin  % Create a dictionary, name it, and use it.
+    % Some local definitions used below
+    /plabel 8 dict dup 3 1 roll def begin % Define primary scale label
+	/linterval 0 def % interval that this label applies to
+	/lformula {.5 add cvi} def % Run the current tick mark through this formula to produce a numerical value to print
+	/font NumFont1 def % Font for this label
+	/fontsize LargeF def % Font size
+	/position /Ntop load def % Font position (on top of tick mark)
+    end
+    /slabel 8 dict dup 3 1 roll def begin % Define secondary scale label
+	/linterval 1 def % interval that this label applies to
+	/lformula {1 sub 10 mul .5 add cvi} def % Run the current tick mark through this formula to produce a numerical value to print
+	/font NumFont1 def % Font for this label
+	/fontsize SmallF def % Font size
+	/position /Nright load def % Font position (on top of tick mark)
+    end
+    /plabel10 plabel ddup dup begin
+	/linterval 0 def
+	/lformula {10 div .5 add cvi} def
+    end def
+    /slabel10 slabel ddup dup begin
+	/linterval 1 def
+	/lformula {10 sub .5 add cvi} def
+    end def
+
+    % Begin scale definitions
+    /title (C) def  % Scale title
+    /tickdir 1 def  % tick marks point up (-1 is down)
+    /beginscale 1 def  % start scale at 1
+    /endscale 10 def  % end scale at 10
+    /xfactor 100 def  % factor to convert all values to whole numbers
+    /formula {log} def  %formula for this scale
+    /ticklength gradsizes def
+    /subsections [ %Define scale sub-sections
+	4 dict dup begin
+	    /beginsub 1 def  %this section starts at 1
+	    /intervals [ 1 .1 .05 .01 ] def % Primary marks at the 1's, secondary at the .1's, tetiary at the .05's, and quadary at the .01's
+	    /labels [ plabel slabel ] def
+	end
+	4 dict dup begin
+	    /beginsub 2 def
+	    /intervals [ 1 .5 .1 .02 ] def
+	    /labels [ plabel ] def
+	end
+	4 dict dup begin
+	    /beginsub 4 def
+	    /intervals [ 1 .5 .1 .05 ] def
+	    /labels [ plabel ] def
+	end
+	4 dict dup begin
+	    /beginsub 10 def
+	    /intervals [ 10 1 .5 .1 ] def
+	    /labels [ plabel10 slabel10] def
+	end
+	4 dict dup begin
+	    /beginsub 20 def
+	    /intervals [ 10 5 1 .2 ] def
+	    /labels [ plabel10 ] def
+	end
+	4 dict dup begin
+	    /beginsub 40 def
+	    /intervals [ 10 5 1 .5 ] def
+	    /labels [ plabel10 ] def
+	end
+    ] def
+    /constants [
+	{PI formula} SymFont1 MedF (\160) ticklength 0 get /Ntop-HalfTick scaleCvars
+    ] def
+    currentdict
+end def
+
+% For the D scale, we'll dup the C scale and modify only a couple variables
+%/Dscale Cscale ddup def Dscale begin
+/Dscale Cscale ddup begin
+    /title (D) def
+    /tickdir -1 def
+    currentdict
+end def
+
+/DFmscale Cscale ddup def DFmscale begin
+    /title (DFm) def
+    /tickdir -1 def
+    /beginscale 4.35 def
+    /endscale 43.5 def
+    /formula {log e log 10 mul log sub} def
+end
+
+/CFscale Cscale ddup def CFscale begin
+    /title (CF) def
+    /tickdir -1 def
+    /beginscale 3.14 def
+    /endscale 32 def
+    /formula {log PI log sub} def
+    /constants [
+	{PI formula} SymFont1 MedF (\160) ticklength 0 get /Ntop-HalfTick scaleCvars
+	dup ddup dup begin
+	    /cvalue {PI 10 mul formula} def
+	end
+    ] def
+end
+
+/DFscale CFscale ddup def DFscale begin
+    /title (DF) def  % Scale title
+    /tickdir 1 def  % tick marks point up (-1 is down)
+end
+
+/CIscale Cscale ddup def CIscale begin
+    /title (CI) def
+    /formula {1 exch div 10 mul log} def
+    /labelcolor [Red] def
+end
+
+/DIscale CIscale ddup def DIscale begin
+    /title (DI) def
+    /tickdir -1 def
+end
+
+/CIFscale CFscale ddup def CIFscale begin
+    /title (CIF) def
+    /tickdir -1 def
+    /beginscale 3.14 def
+    /endscale 32 def
+    /formula {1 exch div 100 mul PI div log} def
+    /labelcolor [Red] def
+end
+
+/DIFscale CIFscale ddup def DIFscale begin
+    /title (DIF) def
+    /tickdir 1 def
+end
+
+/Sscale 32 dict dup 3 1 roll def begin
+    (S) 1 5.7 90 100 {sin 10 mul log} gradsizes scalevars
+    /ctitleoffset 10 def
+    /plabelR 0 {.5 add cvi} NumFontRi MedF /Nright load scaleLvars def
+    /plabelL 0 {90 exch sub .5 add cvi} NumFontLi MedF /Nleft load scaleLvars def
+    plabelL /labelcolor [Red] put
+    /subsections [
+    5.5 [ 1 .5 .1 .05 ] [ plabelL plabelR ] scaleSvars
+    10 [ 5 1 .5 .1 ] [ plabelL plabelR ] scaleSvars
+    20 [ 5 null 1 .5 ] [ plabelL plabelR ] scaleSvars
+    30 [ 10 5 1 .5 ] [ plabelL plabelR ] scaleSvars
+    60 [ 10 null 5 1 ] [ plabelL plabelR ] scaleSvars
+    80 [ 10 null null 5 ] [ ] scaleSvars
+    90 [ 10 null null null ] [ 0 {.5 add cvi} NumFont1 MedF /Ntop load scaleLvars ] scaleSvars
+    ] def
+end
+
+/Tscale 32 dict dup 3 1 roll def begin
+    (T) 1 5.7 45 100 {tan 10 mul log} gradsizes scalevars
+    /ctitleoffset 10 def
+    /plabelR 0 {.5 add cvi} NumFontRi MedF /Nright load scaleLvars def
+    /plabelL 0 {90 exch sub .5 add cvi} NumFontLi MedF /Nleft load scaleLvars def
+    plabelL /labelcolor [Red] put
+    /subsections [
+    5.5 [ 1 .5 .1 .05 ] [ plabelL plabelR ] scaleSvars
+    10 [ 5 1 .5 .1 ] [ plabelL plabelR ] scaleSvars
+    30 [ 5 null 1 .2 ] [ plabelL plabelR ] scaleSvars
+    45 [ 5 null null null ] [ 0 {.5 add cvi} NumFont1 MedF /Ntop load scaleLvars ] scaleSvars
+    ] def
+end
+% The ST scale is for sin and tan of small angles.  Since the angle in
+% radians of small angles splits the difference, we use that for the ST scale.
+/STscale 32 dict dup 3 1 roll def begin
+    (ST) 1 .57 5.70 100 { radians 100 mul log } gradsizes scalevars
+    /ctitleoffset 10 def
+    /subsections [
+    .55 [ .05 null .05 .01 ] [ 0 {} NumFont1 MedF /Ntop load scaleLvars ] scaleSvars
+    .6 [ .1 null .05 .01 ] [ 0 {} NumFont1 MedF /Ntop load scaleLvars ] scaleSvars
+    1 [ .5 null .1 .02] [ 0 {dup dup cvi sub abs .001 lt {cvi dup 1 eq {/lsuffix (\353) def} if} if} NumFont1 MedF /Ntop load scaleLvars ] scaleSvars
+    3 [ 1 .5 .1 .02] [ 0 {dup dup cvi sub abs .001 lt {cvi} if} NumFont1 MedF /Ntop load scaleLvars ] scaleSvars
+    ] def
+    /constants [
+	{180 60 60 mul mul PI div 100000 div log} SymFont1 LargeF (\262) ticklength 1 get /Ntop-NoShow scaleCvars
+	{180 60 mul PI div 1000 div log} SymFont1 LargeF () ticklength 2 get /Ntop scaleCvars
+	{180 60 mul PI div 1000 div log} SymFont1 LargeF (\242) ticklength 1 get /Ntop-NoShow scaleCvars
+%	{ 1 60 div sin 10000 mul log } SymFont1 SmallF () ticklength 2 get /Ntop scaleCvars
+%	{ 1 60 div sin 10000 mul log } SymFont1 SmallF (\262) ticklength 0 get /Ntop-NoShow scaleCvars
+%	{ 1 3600 div sin 1000000 mul log }  SymFont1 SmallF (\242) ticklength 0 get /Ntop-NoShow scaleCvars
+    ] def
+end
+/KE-Tscale Tscale ddup begin
+    /beginscale 5.5 def
+    currentdict end
+def
+/KE-Sscale Sscale ddup begin
+    /beginscale 5.5 def
+    currentdict end
+def
+/KE-STscale STscale ddup begin
+    /beginscale .55 def
+    /endscale 6 def
+    /title (SRT) def
+%    /constants [] def
+    currentdict end
+def
+/Ascale 32 dict dup 3 1 roll def begin
+    /plabel1 0 {.5 add cvi} NumFont1 MedF /Ntop load scaleLvars def
+    /plabel10 0 {10 div .5 add cvi} NumFont1 MedF /Ntop load scaleLvars def
+    /plabel100 0 {100 div .5 add cvi} NumFont1 MedF /Ntop load scaleLvars def
+    (A) 1 1 100 100 {log 2 div} gradsizes scalevars
+    /subsections [
+    1 [1 .5 .1 .02] [plabel1] scaleSvars
+    2 [1 .5 .1 .05] [plabel1] scaleSvars
+    5 [1 null .5 .1] [plabel1] scaleSvars
+    10 [10 5 1 .2] [plabel10] scaleSvars
+    20 [10 5 1 .5] [plabel10] scaleSvars
+    50 [10 null 5 1] [plabel10] scaleSvars
+    100 [100 50 10 2] [plabel100] scaleSvars
+    ] def
+
+    /constants [
+	{PI formula} NumFont1 SmallF  (\203) ticklength 0 get /Ntop-HalfTick scaleCvars
+	{PI 4 div 100 mul formula} NumFont1 SmallF .7 mul () ticklength 0 get /Nleft-HalfTick scaleCvars
+    ] def
+end
+/Bscale Ascale ddup begin
+    /title (B) def
+    /tickdir -1 def
+    currentdict
+end def
+
+/AIscale Ascale ddup def AIscale begin
+    /title (AI) def
+    /formula {100 exch div log 2 div} def
+    /labelcolor [Red] def
+end
+
+/BIscale Bscale ddup def BIscale begin
+    /title (BI) def
+    /formula {100 exch div log 2 div} def
+    /labelcolor [Red] def
+end
+
+/Kscale 32 dict dup 3 1 roll def begin
+    /plabel1 0 {.5 add cvi} NumFont1 MedF /Ntop load scaleLvars def
+    /plabel10 0 {10 div .5 add cvi} NumFont1 MedF /Ntop load scaleLvars def
+    /plabel100 0 {100 div .5 add cvi} NumFont1 MedF /Ntop load scaleLvars def
+    /plabel1000 0 {1000 div .5 add cvi} NumFont1 MedF /Ntop load scaleLvars def
+    (K) 1 1 1000 100 {log 3 div} gradsizes scalevars
+    /subsections [
+    1 [1 .5 .1 .05] [plabel1] scaleSvars
+    3 [1 null .5 .1] [plabel1] scaleSvars
+    6 [1 null null .2] [plabel1] scaleSvars
+    10 [10 5 1 .5] [plabel10] scaleSvars
+    30 [10 null 5 1] [plabel10] scaleSvars
+    60 [10 null null 2] [plabel10] scaleSvars
+    100 [100 50 10 5] [plabel100] scaleSvars
+    300 [100 null 50 10] [plabel100] scaleSvars
+    600 [100 null null 20] [plabel100] scaleSvars
+    1000 [1000 500 100 50] [plabel100] scaleSvars
+    ] def
+end
+/Cscale20 32 dict dup 3 1 roll def begin
+    /plabel 0 {dup dup cvi sub abs .001 lt {.5 add cvi}if} NumFont1 MedF /Ntop load scaleLvars def
+    /slabel 1 {dup cvi sub 10 mul .5 add cvi} NumFont1 SmallF /Nright load scaleLvars def
+    /plabel10 0 {10 div .5 add cvi} NumFont1 LargeF /Ntop load scaleLvars def
+    (C) 1 1 10 1000 {log 2 mul} gradsizes5 scalevars
+    /subsections [
+    1 [ 1 .1 .05 .01 .005 ] [plabel slabel] scaleSvars
+    2 [ 1 .1 null  .05 .01 ] [plabel slabel] scaleSvars
+    5 [ 1 .5 null .1 .02 ] [plabel] scaleSvars
+    10 [ 10 null null null ] [plabel10] scaleSvars
+    ] def
+end
+
+/Cscale30 32 dict dup 3 1 roll def begin
+    /plabel 0 {dup dup cvi sub abs .001 lt {.5 add cvi}if} NumFont1 MedF /Ntop load scaleLvars def
+    /slabel 1 {dup cvi sub 10 mul .5 add cvi} NumFont1 SmallF /Nright load scaleLvars def
+    /plabel10 0 {10 div .5 add cvi} NumFont1 LargeF /Ntop load scaleLvars def
+    (C) 1 1 10 1000 {log 3 mul} gradsizes5 scalevars
+    /subsections [
+    1 [ 1 .1 .05 .01 .005 ] [plabel slabel] scaleSvars
+    3 [ 1 .1 null  .05 .01 ] [plabel slabel] scaleSvars
+    6 [ 1 .5 null .1 .02 ] [plabel] scaleSvars
+    10 [ 10 null null null ] [plabel10] scaleSvars
+    ] def
+end
+
+/eeXlscale 32 dict dup 3 1 roll def begin
+    /units1 [ (**) (1m\200) (*) (**) (1\200) (*) (**) (1K\200) (*) (**) (1M\200) (*) (**) ] def
+    /units2 [ () (m\201s) () () (\201s) () () (ms) () () (S) () (S) ] def
+    /plabel2 0 {.5 add cvi} NumFont1 MedF /Ntop load scaleLvars def
+    /plabel1L 0 {log .5 add cvi curcycle 1 sub add units1 exch dup /curslabelnum exch def get }
+	NumFont1 MedF {curcycle 3 mod 2 eq { {Nleft} exec} {{Ntop} exec } ifelse} scaleLvars def
+    /plabel1R 0 {log .5 add cvi curcycle 1 sub add units2 exch dup /curslabelnum exch def get }
+	NumFont1 MedF {curcycle 3 mod 2 eq curslabelnum 12 eq or { {Nright} exec} {{NtopT} exec } ifelse} scaleLvars def
+    plabel1R /labelcolor [Red] put
+    [(XL)(TL)] 1 1 10 100 {.5 PI mul mul log 12 div curcycle 1 sub 1 12 div mul add} gradsizes scalevars
+    /cycles 12 def
+    /titlecolor [Green Red] def
+
+    /subsections [
+    1 [ 1 null .5 .1 ] [ plabel1L plabel1R ] scaleSvars
+    2 [ 1 null null .2 ] [ plabel2 ] scaleSvars
+    3 [ null null 1 .2 ] [ ] scaleSvars
+    5 [ 1 null null .5 ] [ plabel2 ] scaleSvars
+    6 [ null null 1 .5 ] [ ] scaleSvars
+    10 [ 1 null .5 .1 ] [ plabel1L ] scaleSvars
+    ] def
+end
+
+/eeXcscale 32 dict dup 3 1 roll def begin
+    /units1 [ (**) (1m\200) (*) (**) (1\200) (*) (**) (1K\200) (*) (**) (1M\200) (*) (100M\200) ] def
+    /units2 [ null (m\201s) null null (\201s) null null (ms) null null (S) null (S) ] def
+    /plabel2 0 {.5 add cvi} NumFont1 MedF /Ntop load scaleLvars def
+    /plabel1L 0 {log .5 add cvi curcycle 1 sub add units1 exch dup /curslabelnum exch def get }
+	NumFont1 MedF {curcycle 3 mod 2 eq curslabelnum 12 eq or { {Nleft} exec} {{Ntop} exec } ifelse} scaleLvars def
+    /plabel1R 0 {log .5 add cvi curcycle 1 sub add units2 exch dup /curslabelnum exch def get }
+	NumFont1 MedF {curcycle 3 mod 2 eq curslabelnum 12 eq or { {Nright} exec} {{Ntop} exec } ifelse} scaleLvars def
+    plabel1R /labelcolor [Red] put
+    [(Xc)(R,Tc)] -1 1 10 100 {10 exch div .5 PI mul mul log 12 div curcycle 1 12 div mul 1 exch sub add} gradsizes scalevars
+    /cycles 12 def
+    /titlecolor [Green Red] def
+    /subsections [
+    1 [ 1 null .5 .1 ] [ plabel1L plabel1R ] scaleSvars
+    2 [ 1 null null .2 ] [ plabel2 ] scaleSvars
+    3 [ null null 1 .2 ] [ ] scaleSvars
+    5 [ 1 null null .5 ] [ plabel2 ] scaleSvars
+    6 [ null null 1 .5 ] [ ] scaleSvars
+    10 [ 1 null .5 .1 ] [ plabel1L plabel1R ] scaleSvars
+    ] def
+end
+
+/eeFscale 32 dict dup 3 1 roll def begin
+    /units1 [ (.001Hz) (*) (**) (1Hz) (*) (**) (1KHz) (*) (**) (1MHz) (*) (**) (1GHz) ] def
+    /plabel2 0 {.5 add cvi} NumFont1 MedF /Ntop load scaleLvars def
+    /plabel1 0 {log .5 add cvi curcycle 1 sub add units1 exch get }
+	NumFont1 MedF {Ntop} scaleLvars def
+    [(F)(Fm)] 1 1 10 100 {log 12 div curcycle 1 sub 1 12 div mul add} gradsizes scalevars
+    /titlecolor [Green Red] def
+    /cycles 12 def
+    /subsections [
+    1 [ 1 null .5 .1 ] [ plabel1 ] scaleSvars
+    2 [ 1 null null .2 ] [ plabel2 ] scaleSvars
+    3 [ null null 1 .2 ] [ ] scaleSvars
+    5 [ 1 null null .5 ] [ plabel2 ] scaleSvars
+    6 [ null null 1 .5 ] [ ] scaleSvars
+    10 [ 1 null .5 .1 ] [ plabel1 ] scaleSvars
+    ] def
+end
+
+/eeLscale 32 dict dup 3 1 roll def begin
+    /units1 [ (**) (.001\201H) (*) (**) (1\201H) (*) (**) (1mH) (*) (**) (1H) (*) (100H) ] def
+    /plabel2 0 {.5 add cvi} NumFont1 MedF /Ntop load scaleLvars def
+    /plabel1 0 {log .5 add cvi curcycle 1 sub add units1 exch get }
+	NumFont1 MedF {Ntop} scaleLvars def
+    [(L)] -1 1 10 100 {log 12 div curcycle 1 sub 1 12 div mul add} gradsizes scalevars
+    /cycles 12 def
+    /subsections [
+    1 [ 1 null .5 .1 ] [ plabel1 ] scaleSvars
+    2 [ 1 null null .2 ] [ plabel2 ] scaleSvars
+    3 [ null null 1 .2 ] [ ] scaleSvars
+    5 [ 1 null null .5] [ plabel2 ] scaleSvars
+    6 [ null null 1 .5 ] [ ] scaleSvars
+    10 [ 1 null .5 .1 ] [ plabel1 ] scaleSvars
+    ] def
+end
+
+/eeLiscale 32 dict dup 3 1 roll def begin
+    /units1 [ (**) (.001\201H) (*) (**) (1\201H) (*) (**) (1mH) (*) (**) (1H) (*) (100H) ] def
+    /plabel2 0 {.5 add cvi} NumFont1 MedF /Ntop load scaleLvars def
+    /plabel1 0 {log .5 add cvi curcycle 1 sub add units1 exch get }
+	NumFont1 MedF {Ntop curcycle 3 mod 2 ne { /curticklen 1.5 tickdir mul +=} if} scaleLvars def
+    (L) 1 1 10 100 {10 exch div log 12 div 1 curcycle 1 12 div mul sub add} gradsizes scalevars
+    /titlecolor [Green Red] def
+    /cycles 12 def
+    /subsections [
+    1 [ 1 null .5 .1 ] [ plabel1 ] scaleSvars
+    2 [ 1 null null .2 ] [ plabel2 ] scaleSvars
+    3 [ null null 1 .2 ] [ ] scaleSvars
+    5 [ 1 null null .5] [ plabel2 ] scaleSvars
+    6 [ null null 1 .5 ] [ ] scaleSvars
+    10 [ 1 null .5 .1 ] [ plabel1 ] scaleSvars
+    ] def
+    /constants [
+	{4.02 12 div} NumFont1 MedF (TL) ticklength 0 get /Nright-NoShow scaleCvars
+	dup /labelcolor [Red] put
+	{3.98 12 div} NumFont1 MedF (XL) ticklength 0 get /Nleft-NoShow scaleCvars
+	dup /labelcolor [Green] put
+    ] def
+end
+
+/eer1scale 32 dict begin
+    /plabel1 0 {} NumFont1 LargeF {Ntop} scaleLvars def
+    /plabel2 0 {.5 add cvi} NumFont1 LargeF {Ntop curtick xfactor div lformula 50 eq { 1.5 0 rmoveto} if} scaleLvars def
+    [(r1)] 1 .5 50  1000 { 1 1 1 4 -1 roll div .5 mul sub sub .472 mul }
+	gradsizes scalevars
+    /labelcolor [Red] def
+    /subsections [
+    .5 [ .1 .05 .01 .005 ] [ plabel1 ] scaleSvars
+    .7 [ .1 .05 null .01 ] [ plabel1 ] scaleSvars
+    1 [ .5  null .1 .02 ] [ plabel1 ] scaleSvars
+    1.5 [ .5 null .1 .05 ] [ plabel1 ] scaleSvars
+    2 [ 1 .5 null .1 ] [ plabel2 ] scaleSvars
+    3 [ 3 1 null .2 ] [ plabel2 ] scaleSvars
+    5 [ 5 null null 1 ] [ plabel2 ] scaleSvars
+    10 [ 50 10 null 5 ] [ plabel2 ] scaleSvars
+    20 [ 50 null null 10 ] [ plabel2 ] scaleSvars
+    50 [ 50 null null null ] [ plabel2 ] scaleSvars
+    ] def
+    /constants [
+	{0} NumFont1 LargeF (\204) ticklength 0 get /Ntop scaleCvars
+    ] def
+    currentdict
+end def
+
+/eer2scale eer1scale ddup begin
+    /title [(r2)] def
+    /tickdir -1 def
+    currentdict
+end def
+
+/eePscale 32 dict begin
+    /plabel 0 {.5 add cvi} NumFont1 LargeF {Ntop } scaleLvars def
+    [null (P)] 1 0 14 100 { 2 exp 14 2 exp div .477 mul .523 add} gradsizes scalevars
+    /labelcolor [Green] def
+    /subsections [
+    0 [ 1 null null null ] [ plabel ] scaleSvars
+    1 [ 2 1 null .5 ] [ plabel ] scaleSvars
+    2 [ 2 null null .2 ] [ plabel ] scaleSvars
+    4 [ 1 null .5 .1 ] [ plabel ] scaleSvars
+    10 [ 1 .5 .1 .05 ] [ plabel ] scaleSvars
+    ] def
+    currentdict
+end def
+
+/eeQscale eePscale ddup begin
+    /title [null (Q)] def
+    /tickdir -1 def
+    currentdict
+end def
+
+/eeZscale 32 dict dup 3 1 roll def begin
+    /units1 [ (\200) (K\200) (M\200) ] def
+    /units2 [ (\201\200) (m\200) (\200) ] def
+    /plabel 0 {.5 add cvi} NumFont1 MedF /Ntop load scaleLvars def
+    (Z) 1 1 10 100 {log 6 div curcycle 1 sub 1 6 div mul add} gradsizes scalevars
+    /plabel1 0 {10 curcycle 1 add 3 mod exp mul .5 add cvi}
+	NumFont1 MedF /Nleft load scaleLvars def
+    /plabel2 0 {pop units1 curcycle 1 add 3 div cvi get  }
+	NumFont1 SmallF {Nright 0 SmallF .6 mul tickdir mul rmoveto} scaleLvars def
+    /plabel3 0 {pop units2 curcycle 1 add 3 div cvi  get }
+	NumFont1 SmallF {Nright 0 SmallF -0.6 mul tickdir mul rmoveto} scaleLvars def
+    /cycles 6 def
+    /subsections [
+    1 [ 1 .5 .1 .05 ] [ plabel1 plabel2 plabel3] scaleSvars
+    2 [ 1 null .5 .1 ] [ plabel ] scaleSvars
+    5 [ 5 null 1 .2 ] [ plabel ] scaleSvars
+    10 [ 5 null 1 .2 ] [ plabel1 plabel2 plabel3 ] scaleSvars
+    ] def
+end
+
+/eeCzscale 32 dict dup 3 1 roll def begin
+    /units1 [ (Z) (**) (1PF) (*) (**) (.001\201F) (*) (**) (1\201F) (*) (**) (1000\201F) (Z) ] def
+    /plabel2 0 {.5 add cvi} NumFont1 MedF /Ntop load scaleLvars def
+    /plabel1 0 {log .5 add cvi curcycle 1 sub add units1 exch get }
+	NumFont1 MedF {curcycle 9 eq {Nleft} {Ntop} ifelse} scaleLvars def
+    [(Cz)(C)] 1 1 10 100 {log 12 div curcycle 1 sub 1 12 div mul add} gradsizes scalevars
+    /titlecolor [Black Red] def
+    /cycles 12 def
+    /subsections [
+    1 [ 1 null .5 .1 ] [ plabel1 ] scaleSvars
+    2 [ 1 null null .2 ] [ plabel2 ] scaleSvars
+    3 [ null null 1 .2 ] [ ] scaleSvars
+    5 [ 1 null null .5] [ plabel2 ] scaleSvars
+    6 [ null null 1 .5 ] [ ] scaleSvars
+    10 [ 1 null .5 .1 ] [ plabel1 ] scaleSvars
+    ] def
+    /constants [
+	{8.02 12 div} NumFont1 MedF (TC/fm) ticklength 0 get /Nright-NoShow scaleCvars
+	dup /labelcolor [Red] put
+    ] def
+
+end
+
+/eeCfscale 32 dict dup 3 1 roll def begin
+    /units1 [ (**) (1PF) (*) (**) (.001\201F) (*) (**) (1\201F) (*) (**) (1000\201F) (*) ] def
+    /plabel2 0 {.5 add cvi} NumFont1 MedF /Ntop load scaleLvars def
+    /plabel1 0 {log .5 add cvi curcycle 1 sub add units1 exch get }
+	NumFont1 MedF {curcycle 8 eq {Nleft} {Ntop} ifelse} scaleLvars def
+    [(Cf/C)] -1 1 10 100 {3.94784212 mul 100 exch div log 12 div curcycle 1 add 1 12 div mul 1 exch sub add} gradsizes scalevars
+    /cycles 11 def
+    /subsections [
+    1 [ 1 null .5 .1 ] [ plabel1 ] scaleSvars
+    2 [ 1 null null .2 ] [ plabel2 ] scaleSvars
+    3 [ null null 1 .2 ] [ ] scaleSvars
+    5 [ 1 null null .5] [ plabel2 ] scaleSvars
+    6 [ null null 1 .5 ] [ ] scaleSvars
+    10 [ 1 null .5 .1 ] [ plabel1 ] scaleSvars
+    ] def
+    /constants [
+	{5.02 12 div 3.94784212 log 12 div sub } NumFont1 MedF (XC) ticklength 0 get /Nright-NoShow scaleCvars
+	dup /labelcolor [Green] put
+    ] def
+end
+
+/eeFoscale 32 dict dup 3 1 roll def begin
+    /units1 [ (KHz) (MHz) (GHz) ] def
+    /units2 [ (Hz) (Hz) (KHz) ] def
+    /units3 [ (3000m) (300m) (30m) (3m) (30cm) (3cm) (3mm)] def
+    /plabel 0 {.5 add cvi} NumFont1 MedF /Ntop load scaleLvars def
+    /plabel1 0 {10 curcycle 1 add 3 mod exp mul .5 add cvi}
+	NumFont1 MedF /Nleft load scaleLvars def
+    /plabel2 0 {pop units1 curcycle 1 add 3 div cvi get }
+	NumFont1 SmallF {Nright 0 SmallF -0.6 mul tickdir mul rmoveto} scaleLvars def
+    /plabel3 0 {pop units2 curcycle 1 add 3 div cvi  get }
+	NumFont1 SmallF {Nright 0 SmallF 0.6 mul tickdir mul rmoveto} scaleLvars def
+    /plabel1c1L 0 {pop 10 curcycle 1 add 3 mod exp .5 add cvi}
+	NumFont1 SmallF {Nleft 0 SmallF -0.6 mul tickdir mul rmoveto} scaleLvars def
+    /plabel2c1L 0 {pop 10 curcycle 1 add 3 mod exp 1000 div}
+	NumFont1 MedF {Nleft 0 SmallF 0.6 mul tickdir mul rmoveto} scaleLvars def
+    /plabel4 0 {log .5 add cvi curcycle 1 sub add units3 exch get }
+	NumFont1 MedF {NtopT 0 -2 rmoveto} scaleLvars def
+    plabel4 /labelcolor [Red] put
+    /cycles 6 def
+    (Fo) -1 1 10 100 {log 6 div curcycle 1 sub 1 6 div mul add 1 exch sub} gradsizes scalevars
+    /subsections [
+    1 [ 1 .5 .1 .05 ] [
+	{curcycle 1 ne {plabel1} {null} ifelse}
+	{curcycle 1 ne {null} {plabel1c1L} ifelse}
+	{curcycle 1 ne {null} {plabel2c1L} ifelse}
+	plabel2 plabel3 plabel4] scaleSvars
+    2 [ 1 null .5 .1 ] [ plabel ] scaleSvars
+    5 [ 5 null 1 .2 ] [ plabel ] scaleSvars
+    10 [ 5 null 1 .2 ] [ plabel1 plabel2 plabel3 plabel4 ] scaleSvars
+    ] def
+end
+    
+/R1scale Cscale20 ddup def R1scale begin
+    /title (Sq1) def  % Scale title
+%    /endscale 3.160 def
+    /endscale 3.2 def
+end
+/R2scale Cscale20 ddup def R2scale begin
+    /title (Sq2) def  % Scale title
+%    /beginscale 3.170 def
+    /beginscale 3.1 def
+    /formula dup {1 sub} xappend def
+end
+/Q1scale Cscale30 ddup def Q1scale begin
+    /title (Q1) def  % Scale title
+%    /endscale 3.160 def
+    /endscale 2.16 def
+end
+/Q2scale Cscale30 ddup def Q2scale begin
+    /title (Q2) def  % Scale title
+%    /beginscale 3.170 def
+    /beginscale 2.15 def
+    /endscale 4.7 def
+    /formula dup {1 sub} xappend def
+end
+
+/Q3scale Cscale30 ddup def Q3scale begin
+    /title (Q3) def  % Scale title
+%    /beginscale 3.170 def
+    /beginscale 4.6 def
+    /formula dup {2 sub} xappend def
+end
+
+
+/Chscale 32 dict dup 3 1 roll def begin
+    /plabel 0 {} NumFont1 MedF /Ntop load scaleLvars def
+    (Ch) 1 0 3 100 {cosh log} gradsizes scalevars
+    /subsections [
+    0 [1 .1 null null] [plabel] scaleSvars
+    .1 [null .1 null .05] [plabel] scaleSvars
+    .3 [.1 .05 null .02] [plabel] scaleSvars
+    .4 [.1 .05 null .02] [] scaleSvars
+    .5 [.5 .1 .05 .01] [plabel] scaleSvars
+    1 [.1 null .05 .01] [plabel] scaleSvars
+    ] def
+end
+
+/Thscale 32 dict dup 3 1 roll def begin
+    /plabel 0 {} NumFont1 MedF /Ntop load scaleLvars def
+    (Th) 1 .1 3 1000 {tanh 10 mul log} gradsizes scalevars
+    /subsections [
+    .1 [.05 .01 .005 .001] [plabel] scaleSvars
+    .2 [.05 null .01 .002] [plabel] scaleSvars
+    .4 [.10 .05 .01 .005] [plabel] scaleSvars
+    .7 [.10 null .05 .01] [plabel] scaleSvars
+    1 [.5 null .1 .02] [plabel] scaleSvars
+    1.5 [.5 null .1 .05] [plabel] scaleSvars
+    2 [1 null null .5] [plabel] scaleSvars
+    ] def
+end
+
+/Shscale 32 dict dup 3 1 roll def begin
+    /plabel 0 {} NumFont1 MedF /Ntop load scaleLvars def
+    (Sh) 1 .1 3 1000 {sinh 10 mul log} gradsizes scalevars
+    /subsections [
+    .1 [.05 .01 .005 .001] [plabel] scaleSvars
+    .2 [.05 null .01 .002] [plabel] scaleSvars
+    .4 [.10 .05 .01 .005] [plabel] scaleSvars
+    ] def
+end
+
+/Sh1scale Shscale ddup def Sh1scale begin
+    /title (Sh1) def
+    /beginscale .1 def
+    /endscale .90 def
+end
+/Sh2scale Shscale ddup def Sh2scale begin
+    /title (Sh2) def
+    /beginscale .88 def
+    /endscale 3 def
+    /formula dup {1 sub} xappend def
+end
+
+/H1scale 32 dict dup 3 1 roll def begin
+    /plabel 0 {} NumFont1 MedF /Ntop load scaleLvars def
+    (H1) 1 1.005 1.415 10000 {2 exp 1 sub .5 exp 10 mul log} gradsizes scalevars
+    /subsections [
+    1.005 [.005 .001 .0005 .0001] [plabel] scaleSvars
+    1.01 [.01 .005 .001 .0002] [plabel] scaleSvars
+    1.02 [.01 .005 .001 .0005] [plabel] scaleSvars
+    1.05 [.05 .01 .005 .001] [plabel] scaleSvars
+    1.1 [.1 .05 .01 .002] [plabel] scaleSvars
+    1.2 [.1 .05 null .005] [plabel] scaleSvars
+    ] def
+end
+/H2scale 32 dict dup 3 1 roll def begin
+    /plabel 0 {} NumFont1 MedF /Ntop load scaleLvars def
+    (H2) 1 1.42 10 100 {2 exp 1 sub .5 exp log} gradsizes scalevars
+    /subsections [
+    1.4 [.1 .05 null .01] [plabel] scaleSvars
+    2 [.5 .1 null .02] [plabel] scaleSvars
+    4 [1 .5 .1 .05] [plabel] scaleSvars
+    ] def
+end
+/Pscale 32 dict dup 3 1 roll def begin
+    /plabel 0 {dup dup cvi sub abs .001 lt {.5 add cvi}if} NumFont1 SmallF /Ntop load scaleLvars def
+    (P) 1 0 .995 100000 {1 exch 2 exp sub .5 exp 10 mul log} gradsizes scalevars
+    /labelcolor [Red] def
+    /subsections [
+    0 [.2 null .1 null] [plabel] scaleSvars
+    .1 [null null .1 null] [] scaleSvars
+    .2 [.1 null null .05] [plabel] scaleSvars
+    .3 [.1 null null .02] [plabel] scaleSvars
+    .4 [.1 null .05 .01] [plabel] scaleSvars
+    .6 [.1 .05 .01 .005 ] [plabel] scaleSvars
+    .8 [.1 .05 .01 .002 ] [plabel] scaleSvars
+    .9 [.01 null .005 .001] [plabel] scaleSvars
+    .95 [.01 .005 .001 .0005] [plabel] scaleSvars
+    .98 [.01 .005 .001 .0002] [plabel] scaleSvars
+    .99 [.005 null .0005 .0001] [plabel] scaleSvars
+    ] def
+end
+/Lscale 32 dict dup 3 1 roll def begin
+    /plabel 0 {dup dup cvi sub abs .001 lt {.5 add cvi}if} NumFont1 MedF /Ntop load scaleLvars def
+    (L) 1 0 1 1000 {} gradsizes scalevars
+    /subsections [
+    0 [ .1 .05 .01 .002] [plabel] scaleSvars
+    ] def
+end
+
+/Lnscale 32 dict dup 3 1 roll def begin
+    /plabel 0 {dup dup cvi sub abs .001 lt {.5 add cvi}if} NumFont1 MedF /Ntop load scaleLvars def
+    (Ln) 1 0 10 ln 1000 {10 ln div} gradsizes scalevars
+    /subsections [
+    0 [ .1 null .05 .01 ] [plabel] scaleSvars
+    ] def
+end
+/LL00Bscale 32 dict dup 3 1 roll def begin
+    /plabel 0 {} NumFont1 3.5 /Ntop load scaleLvars def
+    (LL00) 1 .900 .999 100000 {ln -100 mul log 2 div .5 add } gradsizes scalevars
+    /subsections [
+    .900 [ .05 .01 .005 .001 ] [plabel] scaleSvars
+    .950 [ .01 .005 .001 .0005 ] [plabel] scaleSvars
+    .980 [ .01 .005 .001 .0002 ] [plabel] scaleSvars
+    .990 [ .005 .001 .0005 .0001 ] [plabel] scaleSvars
+    .995 [ .001 .0005 .0001 .00005] [plabel] scaleSvars
+    .998 [ .0005 null .0001 .00002] [plabel] scaleSvars
+    ] def
+end
+
+/H266LL01scale  LL00Bscale ddup begin
+    /title [null (LL01)] def
+    /beginscale .90 def
+    /endscale .99 def
+    currentdict
+end def
+    
+/LL00scale 32 dict dup 3 1 roll def begin
+    /plabel 0 {} NumFont1 SmallF /Ntop load scaleLvars def
+    (LL00) 1 .990 .999 100000 {ln -1000 mul log} gradsizes scalevars
+    /subsections [
+    .990 [ .001 .0005 .0001 .00005] [plabel] scaleSvars
+    .995 [ .001 .0005 .0001 .00002] [plabel] scaleSvars
+    .998 [ .0005 .0001 .00005 .00001] [plabel] scaleSvars
+    ] def
+    /labelcolor [Red] def
+end
+
+/LL01scale 32 dict dup 3 1 roll def begin
+    /plabel 0 {} NumFont1 SmallF /Ntop load scaleLvars def
+    (LL01) 1 .905 .990 10000 {ln -100 mul log} gradsizes scalevars
+    /subsections [
+    .900 [ .01 .005 .001 .0005 ] [plabel] scaleSvars
+    .980 [ .005 .001 .0005 .0001 ] [plabel] scaleSvars
+    ] def
+    /labelcolor [Red] def
+end
+/H266LL03scale 32 dict dup 3 1 roll def begin
+    /plabel 0 {log 9 exch sub .5 add cvi 1 string cvs (10- ) dup 3 4 -1 roll putinterval} NumFont1 MedF /Ntop load scaleLvars def
+    [(LL03)] 1 1 50000 1 {10 -9 exp mul ln -.1 mul log 2 div} gradsizes scalevars
+    /subsections [
+    1 [ 1 null null null ] [plabel] scaleSvars
+    2 [ 10 null 5 1 ] [plabel] scaleSvars
+    10 [ 10 null 5 10 ] [plabel] scaleSvars
+    20 [100 null 50 10 ] [plabel] scaleSvars
+    100 [ 100 null 500 100 ] [plabel] scaleSvars
+    200 [ 1000 null 500 100 ] [plabel] scaleSvars
+    1000 [ 1000 null 5000 1000 ] [plabel] scaleSvars
+    2000 [ 10000 null 5000 1000 ] [plabel] scaleSvars
+    10000 [ 10000 null 50000 10000 ] [plabel] scaleSvars
+    20000 [ 100000 null 50000 10000 ] [plabel] scaleSvars
+    ] def
+end
+
+% Combines LL03 - LL02 scales, in references them to A/B scales
+/LL02Bscale 32 dict dup 3 1 roll def begin
+    /plabel 0 {} NumFont1 MedF /Ntop load scaleLvars def
+    (LL02) 1 .00005 .904 100000 {ln -10 mul log 2 div} gradsizes scalevars
+    /subsections [
+    .00005 [.0001 null .00005 .00001] [] scaleSvars
+    .00010 [.0001 null null .00005] [plabel] scaleSvars
+    .00020 [null .0005 .0001 .00005] [] scaleSvars
+    .00100 [.005 null .001 .0005 ] [plabel] scaleSvars
+%    .00200 [null null .001 .0005] [] scaleSvars
+%    .00500 [.005 null .0005 .0001 ] [] scaleSvars
+    .01000 [.01 null null .002] [plabel] scaleSvars
+    .02000 [.05 null null .002] [] scaleSvars
+    .05000 [.05 null .01 .005] [plabel] scaleSvars
+    .10000 [.1 .05 .01 .005] [plabel] scaleSvars
+    .800 [ .05 null .01 .002 ] [plabel] scaleSvars
+    ] def
+
+/LL02scale 32 dict dup 3 1 roll def begin
+    /plabel 0 {} NumFont1 SmallF /Ntop load scaleLvars def
+    (LL02) 1 .370 .904 10000 {ln -10 mul log} gradsizes scalevars
+    /subsections [
+    .350 [ .05 null .010 .002 ] [plabel] scaleSvars
+    .800 [ .02 .01 .005 .001 ] [plabel] scaleSvars
+    .910 [ .01 .01 .005 .001 ] [plabel] scaleSvars
+    ] def
+    /labelcolor [Red] def
+    /constants [
+	{0} NumFont1 SmallF () ticklength 0 get /Ncent scaleCvars
+	{1} NumFont1 SmallF (1/e) ticklength 0 get /Ntop scaleCvars
+    ] def
+end
+/LL03scale 32 dict dup 3 1 roll def begin
+    /plabel 0 {} NumFont1 SmallF /Ntop load scaleLvars def
+    (LL03) 1 .00005 .36600 100000 {ln -1 mul log} gradsizes scalevars
+    /subsections [
+    .00005 [.0001 null .00005 .00001] [plabel] scaleSvars
+    .00020 [.00020 null .00010 .00002] [plabel] scaleSvars
+    .00030 [.00050 null .00010 .00002] [plabel] scaleSvars
+    .00050 [.00050 null null .00010] [plabel] scaleSvars
+    .00100 [.00100 null .00050 .00010] [plabel] scaleSvars
+    .00200 [.00200 null .00100 .00020] [plabel] scaleSvars
+    .00300 [.00500 null .00100 .00020] [plabel] scaleSvars
+    .01000 [.01000 .00500 .00100 .00050] [plabel] scaleSvars
+    .02000 [.01000 null .00500 .00100] [plabel] scaleSvars
+    .06000 [.05000 null .00500 .00100] [plabel] scaleSvars
+    .10000 [.05000 null .01000 .00200] [plabel] scaleSvars
+    ] def
+    /labelcolor [Red] def
+    /constants [
+	{0} NumFont1 SmallF (1/e) ticklength 0 get /Ntop scaleCvars
+	{1} NumFont1 SmallF () ticklength 0 get /Ncent scaleCvars
+    ] def
+end
+/KE-LL03scale 32 dict dup 3 1 roll def begin
+    /plabel 0 {} NumFont1 SmallF /Ntop load scaleLvars def
+    /plabels 0 { dup .01 lt {dup 100000 mul cvi dup log cvi 10 exch exp div cvi dup 10 mod 1 ne {exch pop} {pop} ifelse } if }
+	NumFont1 SmallF /Ntop load scaleLvars def
+    (Ln-3) 1 .00003 .3800 100000 {ln -1 mul log} gradsizes scalevars
+    /subsections [
+    .00003 [.00003 null .00001 null] [plabels] scaleSvars
+    .00005 [.00005 null null .00001] [plabels] scaleSvars
+    .00010 [.00010 null .00005 .00001] [plabels] scaleSvars
+    .00020 [.00020 null .00010 .00002] [plabels] scaleSvars
+    .00030 [.00050 null .00010 .00002] [plabels] scaleSvars
+    .00050 [.00050 null null .00010] [plabels] scaleSvars
+    .00100 [.00100 null .00050 .00010] [plabels] scaleSvars
+    .00200 [.00100  null null .00020] [plabels] scaleSvars
+    .00300 [.00500  null .00100 .00020] [plabels] scaleSvars
+%    .00300 [.00500 null .00100 .00020] [plabels] scaleSvars
+    .01000 [.01000 .00500 .00100 .00050] [plabel] scaleSvars
+    .02000 [.02000 .01000 .00500 .00100] [plabel] scaleSvars
+%    .06000 [.05000 null .00500 .00100] [plabel] scaleSvars
+    .10000 [.05000 null .01000 .00200] [plabel] scaleSvars
+    .38000 [.01000 null .01000 .00200] [plabel] scaleSvars
+    ] def
+    /labelcolor [Red] def
+    /constants [
+	{0} NumFont1 SmallF (1/e) ticklength 0 get /Ntop-HalfTick scaleCvars
+    ] def
+end
+/KE-LL02scale LL02scale ddup begin
+    /title (Ln-2) def
+    /beginscale .35 def
+    /endscale .91 def
+    /constants [
+%	{0} NumFont1 SmallF () ticklength 0 get /Ncent scaleCvars
+	{1} NumFont1 SmallF (1/e) ticklength 0 get /Ntop-HalfTick scaleCvars
+    ] def
+    currentdict
+    end
+def
+/KE-LL01scale LL01scale ddup begin
+    /title (Ln-1) def
+    /beginscale .90 def
+    currentdict
+    end
+def
+/KE-LL00scale LL00scale ddup begin
+    /title (Ln-0) def
+    currentdict
+    end
+def
+/LL0scale 32 dict dup 3 1 roll def begin
+    /plabel 0 {} NumFont1 SmallF /Ntop load scaleLvars def
+    (LL0) 1 1.001 1.010   100000 {ln 1000 mul log} gradsizes scalevars
+    /subsections [
+    1.0010 [.0005 .0001 .00005 .00001] [plabel] scaleSvars
+    1.0020 [.0010 .0005 .00010 .00002] [plabel] scaleSvars
+    1.0050 [.0010 .0005 .00010 .00005] [plabel] scaleSvars
+    ] def
+end
+/LL1scale 32 dict dup 3 1 roll def begin
+    /plabel 0 {} NumFont1 SmallF /Ntop load scaleLvars def
+    (LL1) 1 1.010 1.105  10000 {ln 100 mul log} gradsizes scalevars
+    /subsections [
+    1.010 [.005 .001 .0005 .0001] [plabel] scaleSvars
+    1.020 [.010 .005 .0010 .0002] [plabel] scaleSvars
+    1.050 [.010 .005 .0010 .0005] [plabel] scaleSvars
+    1.060 [.010 .005 .0010 .0005] [plabel] scaleSvars
+    ] def
+end
+
+/LL2scale 32 dict dup 3 1 roll def begin
+    /plabel1 1 {} NumFont1 SmallF /Ntop load scaleLvars def
+    /plabel 0 {} NumFont1 SmallF /Ntop load scaleLvars def
+    (LL2) 1 1.105 2.7 1000 {ln 10 mul log} gradsizes scalevars
+    /subsections [
+    1.105 [null null .001 null] [plabel1] scaleSvars
+    1.106 [.05 .01 .005 .001] [plabel1] scaleSvars
+    1.120 [.05 .01 .005 .001] [plabel] scaleSvars
+    1.200 [.05 null .010 .002] [plabel] scaleSvars
+    1.400 [.10 .05 .010 .005] [plabel] scaleSvars
+    1.800 [.10 null .050 .010] [plabel] scaleSvars
+    2.000 [.50 .1 .050 .010] [plabel] scaleSvars
+    2.500 [.50 null .100 .020] [plabel] scaleSvars
+    ] def
+    /constants [
+	{1} NumFont1 SmallF (e) ticklength 0 get /Ntop scaleCvars
+    ] def
+end
+
+/LL2Bscale 32 dict dup 3 1 roll def begin
+    /plabel0 0 {dup dup cvi sub abs .001 lt {.5 add cvi}if} NumFont1 SmallF /Ntop load scaleLvars def
+    (LL2) 1 1.106 20000 1000 {ln 10 mul log 2 div} gradsizes scalevars
+    /subsections [
+    1.106 [ .1 .05 .01 .002] [] scaleSvars
+    1.11 [ .01 null null .002] [plabel0] scaleSvars
+    1.12 [ .05 null .01 .002] [plabel0] scaleSvars
+    1.2 [ .1 .05 .01 .005] [plabel0] scaleSvars
+    1.4 [.1 null .05 .010] [plabel0] scaleSvars
+    1.800 [.10 null null .020] [plabel0] scaleSvars
+    1.900 [.10 null .050 .020] [] scaleSvars
+    2.000 [.5 null .10 .020] [plabel0] scaleSvars
+    2.500 [.50 null .100 .050] [plabel0] scaleSvars
+    3 [1 null .100 .050] [plabel0] scaleSvars
+    4 [1 null .5 .1] [plabel0] scaleSvars
+    6 [1 null null .2] [plabel0] scaleSvars
+    7 [5 null null .2] [plabel0] scaleSvars
+    10 [10 5 1 .5] [plabel0] scaleSvars
+    20 [10 null null 2] [plabel0] scaleSvars
+    30 [null null 10 2] [] scaleSvars
+    50 [50 null 10 5] [plabel0] scaleSvars
+    100 [100 null null 20] [plabel0] scaleSvars
+    300 [500 null null 20] [plabel0] scaleSvars
+    500 [500 null null 100] [plabel0] scaleSvars
+    1000 [1000 null null 200] [plabel0] scaleSvars
+    2000 [null null 1000 200] [] scaleSvars
+    3000 [null null 1000 500] [] scaleSvars
+    5000 [5000 null null 1000] [] scaleSvars
+    10000 [10000 null null 2000] [plabel0] scaleSvars
+    20000 [10000 null null 2000] [] scaleSvars
+    ] def
+end
+
+/LL3scale 32 dict dup 3 1 roll def begin
+    /plabel 0 {.5 add cvi} NumFont1 SmallF /Ntop load scaleLvars def
+    (LL3) 1 2.74 21000 100 {ln log} gradsizes scalevars
+
+    /subsections [
+    2.6 [1 .5 .1 .02] [plabel] scaleSvars
+    4 [1 .5 .1 .05] [plabel] scaleSvars
+    6 [1 null .5 .1] [plabel] scaleSvars
+    10 [5 null 1 .2] [plabel] scaleSvars
+    15 [5 null 1 .5] [plabel] scaleSvars
+    20 [10 5 1 .5] [plabel] scaleSvars
+    30 [10 null 5 1] [plabel] scaleSvars
+    50 [50 null 10 2] [plabel] scaleSvars
+    100 [100 50 10 5] [plabel] scaleSvars
+    200 [200 100 50 10] [plabel] scaleSvars
+    500 [500 null 100 50] [plabel] scaleSvars
+    1000 [1000 null 500 100] [plabel] scaleSvars
+    2000 [2000 null 1000 200] [plabel] scaleSvars
+    4000 [5000 null 1000 200] [plabel] scaleSvars
+    5000 [5000 null 1000 500] [plabel] scaleSvars
+    10000 [10000 null 5000 1000] [plabel] scaleSvars
+    ] def
+    /constants [
+	{0} NumFont1 SmallF (e) ticklength 0 get /Ntop scaleCvars
+	{1} NumFont1 SmallF () ticklength 2 get /Ncent scaleCvars
+    ] def
+end
+
+/KE-LL0scale LL0scale ddup begin
+    /title (Ln 0) def
+    currentdict
+    end
+def
+
+/KE-LL1scale LL1scale ddup begin
+    /title (Ln 1) def
+    /endscale 1.11 def
+    currentdict
+    end
+def
+
+/KE-LL2scale 32 dict dup 3 1 roll def begin
+    /plabel1 1 {} NumFont1 SmallF /Ntop load scaleLvars def
+    /plabel 0 {} NumFont1 SmallF /Ntop load scaleLvars def
+    (Ln 2) 1 1.1 2.8 1000 {ln 10 mul log} gradsizes scalevars
+    /subsections [
+    1.1 [.1 .01 .005 .001] [plabel] scaleSvars
+    1.11 [.05 .01 .005 .001] [plabel] scaleSvars
+    1.200 [.05 null .010 .002] [plabel] scaleSvars
+    1.400 [.10 .05 .010 .005] [plabel] scaleSvars
+    1.800 [.10 null .050 .010] [plabel] scaleSvars
+    2.000 [.50 .1 .050 .010] [plabel] scaleSvars
+    2.500 [.50 null .100 .020] [plabel] scaleSvars
+    2.800 [.10 null .100 .020] [plabel] scaleSvars
+    ] def
+    /constants [
+	{1} NumFont1 SmallF (e) ticklength 0 get /Ntop-HalfTick scaleCvars
+    ] def
+end
+
+/KE-LL3scale 32 dict dup 3 1 roll def begin
+    /plabel 0 {dup dup cvi sub abs .001 lt {.5 add cvi}if} NumFont1 SmallF /Ntop load scaleLvars def
+    /plabels 0 { dup 100 gt {dup cvi dup log cvi 10 exch exp div cvi dup 10 mod 1 ne {exch pop} {pop cvi} ifelse } if }
+	NumFont1 SmallF /Ntop load scaleLvars def
+    (Ln 3) 1 2.6 30000 100 {ln log} gradsizes scalevars
+
+    /subsections [
+    2.6 [.1 null null .02] [plabel] scaleSvars
+    2.62 [1 .5 .1 .02] [plabel] scaleSvars
+    4 [1 .5 .1 .05] [plabel] scaleSvars
+    6 [1 null .5 .1] [plabel] scaleSvars
+    10 [5 null 1 .2] [plabel] scaleSvars
+    15 [5 null 1 .5] [plabel] scaleSvars
+    20 [10 5 1 .5] [plabel] scaleSvars
+    30 [10 null 5 1] [plabel] scaleSvars
+    50 [50 null 10 2] [plabel] scaleSvars
+    100 [100 50 10 5] [plabel] scaleSvars
+    200 [100 null 50 10] [plabels] scaleSvars
+    500 [500 null 100 50] [plabels] scaleSvars
+    1000 [1000 null 500 100] [plabels] scaleSvars
+    2000 [1000 null null 200] [plabels] scaleSvars
+%    4000 [5000 null 1000 200] [plabels] scaleSvars
+    5000 [5000 null 1000 500] [plabels] scaleSvars
+    10000 [10000 null 5000 1000] [plabels] scaleSvars
+    20000 [10000 null null 2000] [plabels] scaleSvars
+    ] def
+    /constants [
+	{0} NumFont1 SmallF (e) ticklength 0 get /Ntop scaleCvars
+	{1} NumFont1 SmallF () ticklength 2 get /Ncent scaleCvars
+    ] def
+end
+
+
+/Constscale 32 dict dup 3 1 roll def begin
+    (Constants) 1 0 0 0 {} gradsizes scalevars
+    /subsections [] def
+    /labelcolor [Black] def
+    /constants [
+	{0} NumFont1 LargeF () ticklength 0 get /Ntop scaleCvars
+	{PI 4 mul 10 div log} NumFont1 LargeF (4\203) ticklength 0 get /Nleft scaleCvars
+	{1.34 log} NumFont1 LargeF (HP/kW) ticklength 0 get /Nright scaleCvars
+%	{PI 180 div 100 mul log} NumFont1 LargeF (\205) ticklength 0 get /Nleft scaleCvars
+	{PI 180 div 100 mul log} NumFont1 LargeF (rad/deg) ticklength 0 get /Nleft scaleCvars
+	{PI .5 exp log} NumFont1 LargeF (\206\203) ticklength 0 get /Nright scaleCvars
+%	{180 60 60 mul mul PI div 100000 div log} NumFont1 LargeF (\205") ticklength 0 get /Nleft scaleCvars
+	{180 60 60 mul mul PI div 100000 div log} NumFont1 LargeF (sec/rad) ticklength 0 get /Nleft scaleCvars
+	{2.20462 log} NumFont1 LargeF (lb/kg) ticklength 0 get /Nleft scaleCvars
+	{10 ln log} NumFont1n LargeF (Ln 10) ticklength 0 get /Nright scaleCvars
+	{2.54 log} NumFont1n LargeF (cm/in) ticklength 0 get /Nleft scaleCvars
+	{e log} NumFont1 LargeF (e) ticklength 0 get /Nleft scaleCvars
+%	{PI 180 60 mul div 10000 mul log} NumFont1 LargeF (1/\205') ticklength 0 get /Nleft scaleCvars
+	{PI 180 60 mul div 10000 mul log} NumFont1n LargeF (rad/min) ticklength 0 get /Nleft scaleCvars
+	{3.048 log} NumFont1 LargeF (m/ft) ticklength 0 get /Nleft scaleCvars
+	{PI log} NumFont1 LargeF (\203) ticklength 0 get /Nleft scaleCvars
+	{10 .5 exp log} NumFont1n LargeF (\20610) ticklength 0 get /Nright scaleCvars
+%	{180 60 mul PI div 1000 div log} NumFont1 LargeF (\205') ticklength 0 get /Nleft scaleCvars
+	{180 60 mul PI div 1000 div log} NumFont1n LargeF (min/rad) ticklength 0 get /Nleft scaleCvars
+	{1 e div 10 mul log} NumFont1 LargeF (1/e) ticklength 0 get /Nleft scaleCvars
+	{3.937 log} NumFont1 LargeF (in/cm) ticklength 0 get /Nleft scaleCvars
+	{e log 10 mul log} NumFont1 LargeF (Log e) ticklength 0 get /Nleft scaleCvars
+%	{e -10 exp 100000 mul log} NumFont1 LargeF (e^-10) ticklength 0 get /Nright scaleCvars
+	{4.53592 log} NumFont1 LargeF (g/lb) ticklength 0 get /Nright scaleCvars
+%	{PI 180 60 60 mul mul div 1000000 mul log} NumFont1 LargeF (1/\205") ticklength 0 get /Nright scaleCvars
+	{PI 180 60 60 mul mul div 1000000 mul log} NumFont1 LargeF (rad/sec) ticklength 0 get /Nright scaleCvars
+%	{180 PI div 10 div log} NumFont1 LargeF (1/\205) ticklength 0 get /Nleft scaleCvars
+	{180 PI div 10 div log} NumFont1 LargeF (deg/rad) ticklength 0 get /Nleft scaleCvars
+	{2 PI mul log} NumFont1 LargeF (2\203) ticklength 0 get /Nleft scaleCvars
+%	{20 PI div log} NumFont1 LargeF (\205,,) ticklength 0 get /Nright scaleCvars
+	{2 PI div 10 mul log} NumFont1 LargeF (2/\203) ticklength 0 get /Nright scaleCvars
+	{7.46 log} NumFont1 LargeF (kW/HP) ticklength 0 get /Nleft scaleCvars
+	{PI 4 div 10 mul log} NumFont1 LargeF (\203/4) ticklength 0 get /Nright scaleCvars
+	{PI 4 div .5 exp 10 mul log} NumFont1 LargeF (\206(\203/4)) ticklength 0 get /Nright scaleCvars
+	{1} NumFont1 LargeF () ticklength 0 get /Ntop scaleCvars
+    ] def
+end
+
+} def
+
+% Some utility functions and constants definitions
+/adup { dup length array copy } def % duplicates an array
+/ddup { dup length dict begin { def } forall currentdict end } def % duplicates a dictionary
+
+/xappend {
+    exch mark exch load /exec load 4 -1 roll /exec load ] cvx
+} def
+/tan { dup sin exch cos div } def
+/NumFont1 /Times-Roman findfont def
+/TitleFont1 /Times-Roman findfont [ .8 0 0 1 0 0 ] makefont def
+/LargeF 4.5 def
+/MedF 3.8 def
+/SmallF 3.2 def
+
+/inch {72 mul} def
+/cm {28.3464567 mul} def
+/mm {2.83464567 mul} def
+/PI 3.14159265 def
+/e 2.71828182 def
+
+%/Red {178 255 div 20 255 div 20 255 div} def
+/Black {0 0 0} def
+/Red {1 0 0} def
+/Green {34 256 div 139 256 div 34 256 div} def
+/Blue {0 0 1} def
+
+/radians { PI mul 180 div } def
+/sinh { dup e exch exp exch e exch neg exp sub 2 div } def
+/cosh { dup e exch exp exch e exch neg exp add 2 div } def
+/tanh { dup sinh exch cosh div } def
+
+% C style increment/decrement operators
+/++ { dup load 1 add def } def
+/-- { dup load 1 sub def } def
+/+= { exch dup 3 1 roll load exch add def } def
+/-= { exch dup 3 1 roll load exch sub def } def
+
+
+% Copies characters from one font to another
+% (avoids having to constantly switch to symbol font)
+(%Calendar%) currentdevparams /Second get srand
+/glyphcopy {
+    32 dict begin
+    /DestEncoding exch def
+    /DestFont exch def
+    /SrcChars exch def
+    /SrcFont exch def
+
+    /NewCharStrings
+        SrcFont /CharStrings get length
+        DestFont /CharStrings get length add
+    dict def
+    SrcFont /CharStrings get {NewCharStrings 3 1 roll put} forall
+    DestFont /CharStrings get {NewCharStrings 3 1 roll put} forall
+    /NewEncoding 256 array def
+    DestFont /Encoding get NewEncoding copy pop
+    /i 0 def
+    {
+        i SrcChars length ge {exit} if
+        NewEncoding DestEncoding i get SrcChars i get put
+        /i ++
+    } loop
+    DestFont dup length dict begin
+        { 1 index /FID ne 2 index /CharStrings ne and
+           2 index /Encoding ne and 
+	   2 index /.Alias ne and 
+%	   2 index /FontName ne and 
+	   {def} {pop pop} ifelse }forall
+        currentdict
+    end
+    dup /Encoding NewEncoding put
+    dup /CharStrings NewCharStrings put
+    dup /UniqueID rand put
+%    dup /FontName (abc) put
+} def
+
+
+% Copy Omega, lambda, mu, pi from Symbol font to NumFont1
+/NumFont1 dup /Symbol findfont [/Omega /mu /lambda /pi /infinity /rho /radical] NumFont1 [ 128 129 130 131 132 133 134] glyphcopy
+definefont def
+NumFont1 .00000001 scalefont setfont 0 0 moveto (\200\201\202\203\204\205\206) show
+/NumFont1n NumFont1 [ .8 0 0 1 0 0 ] makefont def
+/SymFont1 /Symbol findfont def
+/NumFontRi /Helvetica findfont [ 1 0 20 tan 1 0 0] makefont def % 20 deg italics 
+/NumFontLi /Helvetica findfont [ 1 0 -20 tan 1 0 0] makefont def % 20 deg left italics 
+
+
+% parse a space-delimited text string into an array of strings
+/strparse {
+    8 dict begin
+    /delim exch def
+    /instr exch def
+    /len instr length def
+    /i 0 def
+    /j 0 def
+    [
+    {
+        {
+            i len ge {exit} if
+            instr i get delim ne  {exit} if
+            /i ++
+        } loop
+        i len ge {exit} if
+        /j i def
+        {
+            j len ge {exit} if
+            instr j get delim eq  {exit} if
+            /j ++
+        } loop
+        instr i j i sub getinterval
+        /i j def
+        i len ge {exit} if
+    } loop
+    ]
+    end
+} def
+
+/Ptick .30 cm def
+/Stick .28 cm def
+/Ttick .150 cm def
+/Qtick .09 cm def
+
+%/Ptick .28 cm def
+%/Stick .27 cm def
+%/Ttick .125 cm def
+%/Qtick .08 cm def
+
+/gradsizes {[ Ptick Stick Ttick Qtick ]} def
+/gradsizes5 {[ Ptick Stick Stick Ttick add 2 div Ttick Qtick ]} def
+
+/Ntop {
+    8 dict begin
+    /y exch def
+    /x exch def
+    x 2 div -1 mul
+    tickdir 0 gt { curticklen  y sub } {curticklen} ifelse
+    rmoveto
+    curticklen y .25 add tickdir mul sub
+    end
+    /curticklen exch def
+%    end
+%%    /curticklen curticklen fontsize .25 add tickdir mul sub def
+%    /curticklen curticklen fontsize tickdir mul sub def
+} def
+
+/NtopT {
+    8 dict begin
+    /y exch def
+    /x exch def
+    x 2 div -1 mul
+    tickdir 0 gt { curticklen .25 add } {curticklen y .25 add sub} ifelse
+    rmoveto
+    end
+} def
+
+/Ncent {
+    8 dict begin
+    /y exch def
+    /x exch def
+    x 2 div -1 mul
+    tickdir 0 gt { curticklen  y sub } {curticklen} ifelse
+    rmoveto
+    end
+%    /curticklen curticklen 2 tickdir mul sub def
+} def
+
+/NrightT {
+    8 dict begin
+    /y exch def
+    /x exch def
+    .5
+    tickdir 0 gt { curticklen .25 add } {curticklen y .25 add sub} ifelse
+    rmoveto
+    end
+} def
+
+/NleftT {
+    8 dict begin
+    /y exch def
+    /x exch def
+    -.5 x sub
+    tickdir 0 gt { curticklen .25 add } {curticklen y .25 add sub} ifelse
+    rmoveto
+    end
+} def
+
+/Nright {
+    8 dict begin
+    /y exch def
+    /x exch def
+    .5
+    curticklen
+    tickdir 0 gt { y sub} if
+    rmoveto
+    end
+} def
+/Nleft {
+    8 dict begin
+    /y exch def
+    /x exch def
+    -1 x sub
+    curticklen
+    tickdir 0 gt { y sub} if
+    rmoveto
+    end
+} def
+/scalevars {
+    /ticklength exch def
+    /formula exch def  %formula for this scale
+    /xfactor exch def  % factor to convert all values to whole numbers
+    /endscale exch def  % end scale at 10
+    /beginscale exch def  % start scale at 1
+    /tickdir exch def  % tick marks point up (-1 is down)
+    /title exch def % Scale title
+} def
+/scaleLvars {
+    8 dict dup begin
+    6 1 roll
+    /position exch def
+    /fontsize exch def
+    /font exch def
+    /lformula exch def
+    /linterval exch def
+    end
+} def
+/scaleSvars {
+    4 dict dup begin
+    4 1 roll
+    /labels exch def
+    /intervals exch def
+    /beginsub exch def
+    end
+} def
+/scaleCvars {
+    8 dict dup begin
+    7 1 roll
+    /position exch def
+    /curticklen exch def
+    /label exch def
+    /fontsize exch def
+    /font exch def
+    /cvalue exch def
+    % if present, extract tickstyle from position.
+    /position load 20 string cvs 45 strparse
+    dup 0 get cvn load /position exch def
+    dup length 1 gt {1 get cvn /tickstyle exch def}{/tickstyle /default def pop}ifelse
+    end
+} def
+
+scaledefs
+/gen_scale { %scale-def-dictionary
+    begin % Use given scale as current dictionary
+    32 dict begin % Any new variables goes in temp dictionary
+
+    % Apply the scale title
+
+    title type /arraytype eq {
+	/titleLEFT null def
+	/titleRIGHT null def
+	title 0 get null ne { title 0 get /titleLEFT exch def } if
+	title length 1 gt { title 1 get null ne { title 1 get /titleRIGHT exch def } if } if
+    } { /titleLEFT title def /nodefaulttitleRIGHT where { pop nodefaulttitleRIGHT }{false} ifelse false eq {/titleRIGHT titleLEFT def}{/titleRIGHT null def} ifelse } ifelse
+%    } { /titleLEFT title def /titleRIGHT titleLEFT def} ifelse
+    titleLEFT null ne titleRIGHT null ne or {
+
+	% If the labels have a color, use that for the scale title.
+	% However, a specified titlecolor will override the labelcolor.
+	/titlecolor where { pop } { /labelcolor where {
+	    pop /titlecolor labelcolor def } if
+	} ifelse
+	/titlecolor where {
+	    pop
+	    /lefttitlecolor titlecolor 0 3 getinterval def
+	    titlecolor length 6 eq {
+		/righttitlecolor titlecolor 3 3 getinterval def
+	    } {
+		/righttitlecolor titlecolor 0 3 getinterval def
+	    } ifelse
+	} if
+	/titlegap where {pop}{/titlegap .42 cm def} ifelse
+	/circular where {
+	    pop
+	    gsave
+	    /lefttitlecolor where {
+		pop
+		titlecolor aload pop setrgbcolor
+	    } if
+	    NumFont1 5.5 scalefont setfont
+	    -10 rotate
+	    0 curline 5 tickdir mul add moveto
+	    titleLEFT show
+	    grestore
+	} {
+	    TitleFont1 6.5 scalefont setfont
+	    titleLEFT null ne {
+		/lefttitlecolor where {
+		    pop
+		    lefttitlecolor aload pop setrgbcolor
+		} if
+		scalestart titleLEFT stringwidth pop sub titlegap sub curline tickdir 0 lt { 6 sub } { 2 add } ifelse moveto
+		titleLEFT show
+	    } if
+	    titleRIGHT null ne {
+		/righttitlecolor where {
+		    pop
+		    righttitlecolor aload pop setrgbcolor
+		} if
+		scaleend titlegap add curline tickdir 0 lt { 8 sub } { 1 add } ifelse moveto
+		titleRIGHT show
+	    } if
+	} ifelse
+	/titlecolor where {
+	    pop
+	    0 0 0 setrgbcolor
+	} if
+    } if
+    /cycles where { pop /curcycle 1 def cycles } { 1 } ifelse
+    {
+    /currentSubsection 0 def
+    /lastSubsection subsections length 1 sub def
+    % process each element in subsection array with forall
+    subsections {
+	begin % activate current subsection dictionary
+	    8 dict begin
+	    % determine current increment from intervals array
+	    % (this grabs the last non-null value)
+	    intervals {
+		dup null ne { /increment exch def } {pop} ifelse
+	    } forall
+	    % use beginning of scale if it is greater than beginsub
+	    /beginsub beginscale beginsub gt { beginscale def } {pop} ifelse
+	    /endsub
+		currentSubsection lastSubsection lt {
+		    subsections currentSubsection 1 add get
+			/beginsub get increment sub
+		} { endscale } ifelse
+	    def
+	    /endsub endscale endsub lt { endscale def } {pop} ifelse
+	    /curcycle where {
+		pop curcycle cycles lt endscale endsub eq and {
+		    /endsub increment -=
+		} if
+	    } if
+
+	    % loop through division marks in current subsection
+	    beginsub xfactor mul .5 add cvi
+	    increment xfactor mul .5 add cvi
+	    endsub xfactor mul .5 add cvi
+	    {
+		gsave
+		/curtick exch def
+		/curinterval 0 def
+		{
+		    intervals curinterval get
+		    dup null ne {
+		    xfactor mul cvi
+		    curtick exch mod 0 eq { 
+			exit
+		    } if
+		    } {pop} ifelse
+		    /curinterval curinterval 1 add def
+		} loop
+		/curticklen ticklength curinterval get tickdir mul def %tick length
+		/circular where {
+		    pop
+		    /tickx curtick xfactor div formula exec 360 mul def %x position
+		} {
+		    /tickx curtick xfactor div formula exec scalelen mul scalestart add def %x position
+		} ifelse
+
+		/saveticklen curticklen def
+		/circular where {
+		    pop
+		    360 tickx sub rotate
+		} if
+		
+		% Process label definitions
+		[ labels { exec dup null eq {pop} if } forall ]  %take out nulls
+		    {
+		    begin % start useng "labels" dictionary
+			8 dict begin % local variables temp dictionary
+			curinterval linterval eq { % Does this label apply now?
+			    /circular where {
+				pop 0 curline moveto
+			    } {
+				tickx curline moveto
+			    } ifelse
+			    % set scaling factor for this font
+			    /fscale font fontsize scalefactor def
+			    
+			    font fontsize fscale mul scalefont setfont
+
+			    curtick xfactor div lformula %generate label
+			    dup null eq { pop end end exit } if
+			    dup type /stringtype ne { 20 string cvs } if %convert to string if needed
+
+			    dup textsize rmoveto %micro adjustment
+			    dup /lWidth exch def exch % may needs these later
+			    dup /lHeight exch def exch
+			    position
+			    /labelcolor where {
+				pop
+				labelcolor aload pop setrgbcolor
+				show
+				/lsuffix where { pop lsuffix exec show } if
+				0 0 0 setrgbcolor
+			    } {
+			       	show
+			       	/lsuffix where { pop lsuffix exec show } if
+			    } ifelse
+			} if
+			curticklen
+			end
+		    end
+		    /curticklen exch def
+		} forall
+
+		% draw tick mark
+		newpath
+		/circular where {
+		    pop 0 curline moveto
+		} {
+		    tickx curline moveto
+		} ifelse
+		0 curticklen rlineto
+		.1 setlinewidth
+		closepath
+		stroke
+		grestore
+	    } for
+	    end
+	end
+	/currentSubsection currentSubsection 1 add def
+    } forall
+    /curcycle where { pop /curcycle ++ } if
+    } repeat
+    % Add constants
+    /constants where { pop constants {
+	begin
+	    8 dict begin
+	    gsave
+	    /curticklen curticklen tickdir mul def
+	    /fscale font fontsize scalefactor def
+	    font fontsize fscale mul scalefont setfont
+
+	    /circular where {
+		pop
+		/tickx cvalue exec 360 mul def
+	    } {
+		/tickx cvalue exec scalelen mul scalestart add def
+		
+	    } ifelse
+
+	    /circular where {
+		360 tickx sub rotate
+		pop 0 curline moveto
+	    } {
+		tickx curline moveto
+	    } ifelse
+
+	    label dup type /stringtype ne { 20 string cvs } if
+	    dup textsize rmoveto
+	    /labelcolor where {
+	       	pop
+		labelcolor aload pop setrgbcolor
+	    } { Black setrgbcolor } ifelse
+	    position show % display the label
+	    0 0 0 setrgbcolor
+
+	    tickstyle /NoShow ne {
+	    newpath % draw tick mark
+	    /circular where {
+		pop 0 curline moveto
+	    } {
+		tickx curline moveto
+	    } ifelse
+	    .1 setlinewidth
+	    tickstyle /HalfTick eq {
+		0 curticklen .5 mul rmoveto
+		/curticklen curticklen .5 mul def
+	    } if
+	    tickstyle /QtrTick eq {
+		0 curticklen .75 mul rmoveto
+		/curticklen curticklen .25 mul def
+	    } if
+	    0 curticklen rlineto
+	    closepath
+	    stroke
+	    } if
+	    grestore
+	    end
+	end
+    } forall } if
+    end
+    end
+    
+} def
+
+% returns width, height, x-offset, y-offset of a string
+/textsize { % string
+    32 dict begin
+    gsave
+	initmatrix
+	newpath 0 setlinewidth 0 0 moveto false charpath flattenpath pathbbox
+	/URy exch def /URx exch def /LLy exch def /LLx exch def
+	URx LLx sub
+	URy LLy sub
+	LLx -1 mul
+	LLy -1 mul
+    grestore
+    end
+} def
+
+/scalefactor {
+    0 begin
+    /fsize exch def
+    /fnt exch def
+    /fname fnt /FontName get def
+    fname 30 string cvs dup length
+    fsize 10 string cvs dup length
+    dup 3 index 1 add add string dup
+    0 7 -1 roll putinterval dup
+    5 -1 roll ( ) putinterval dup
+    4 -2 roll exch putinterval cvn
+    dup dup where {pop pop} {
+	gsave fnt fsize scalefont setfont
+	(0123456789) textsize pop pop exch pop
+	fsize exch div def 
+	grestore
+    } ifelse load
+    end
+} dup
+0 32 dict put def
+
+% Takes an array containing the size of the stators & slide, and a string with
+% a list of scales to include in the rule.  See examples.
+% Returns a rule definition data structure.
+/definerule {
+    32 dict begin
+    32 strparse /scalelist exch def
+    /spacing exch def
+    /statordefs [ /sideA1 /sideA2 /sideB1 /sideB2 ] def
+    /slidedefs [ /slideA /slideB ] def
+    /curstatordef 0 def
+    /curslidedef 0 def
+    /ruledef 6 dict def
+    /i 0 def
+    /snum 0 def
+    /sdir 1 def
+    % build an array containing code to print scales
+    [ /skip 0 0 {div def } { } forall
+    scalelist { % cycle through each entry in the input scale list
+        /curtoken exch def
+        {
+            { curtoken ([) eq curtoken (]) eq or curtoken (:) eq or {
+                curtoken (:) eq { /sdir 0 def } if
+		i 0 gt {
+		    ] dup 2 i put dup 1 spacing snum get put /snum sdir +=
+		} { ] } ifelse
+		sdir 0 eq { i 0 gt { /sdir -1 def } { /sdir 1 def /snum 0 def } ifelse } if
+                curtoken ([) eq curtoken (:) eq or {
+                    i 0 gt {
+                    ruledef exch statordefs curstatordef get exch put /curstatordef ++
+                    } { pop /curstatordef ++ } ifelse
+                } if
+		curtoken (]) eq {
+		    ruledef exch slidedefs curslidedef get exch put /curslidedef ++
+		} if
+		[ /skip 0 0 {div def} {} forall
+		/i 0 def
+		exit
+	    } }
+	    { curtoken (|) eq {
+		{hline} {} forall exit
+	    } }
+	    { curtoken (blank) eq {
+		{/curline skip -=} {} forall /i ++ exit
+	    } }
+	    { true {
+		/newtickdir 0 def
+		/lensub 0 def
+		/donewline true def
+
+		false
+		{
+		    {exit} if
+		    curtoken dup length lensub 1 add sub get
+		    {
+			{ dup 45 eq { /newtickdir -1 def /lensub ++ pop false exit} }
+			{ dup 43 eq { /newtickdir 1 def /lensub ++ pop false exit} }
+			{ dup 94 eq { /donewline false def /lensub ++ pop false exit} }
+			{ true { pop true exit } }
+		    } { exec if } forall
+		} loop
+		curtoken length 5 add lensub sub string
+		dup 0 curtoken putinterval dup dup length 5 sub (scale) putinterval
+		cvn dup = load 
+		newtickdir 0 ne { ddup dup /tickdir newtickdir put } if
+		donewline true eq {
+		    {
+			dup /tickdir get 1 eq {
+			    /curline skip -= gen_scale
+			} {
+			    gen_scale /curline skip -=
+			} ifelse
+		    } {} forall
+		    /i ++ 
+		} {
+		    {gen_scale} {} forall
+		} ifelse
+	    } } 
+	} { exec if } forall % this fakes a case statement
+	/lasttoken curtoken def
+    } forall
+    ] dup 2 i put
+    curtoken (]) ne {
+	dup 1 spacing snum get put /snum sdir += /i 0 def
+	ruledef exch statordefs curstatordef get exch put /curstatordef ++
+    } {pop} ifelse
+    ruledef
+    end
+} def
+
+% Processes and prints out a slide rule given a rule data structure input.
+/printrule {
+    begin
+      8 dict begin
+	gsave
+	/circular where {
+	    pop
+	    8.5 inch 2 div 11 inch circular 2 div sub .25 sub translate
+	    /curline circular 2 div def
+	} {
+
+	    /curline 8 inch def
+	    /scalelen 25 cm def
+	    /scalestart 11 inch 2 div scalelen 2 div sub def
+	    /startoffset where { pop /scalestart startoffset += } if
+	    /scaleend scalelen scalestart add def
+	    0 inch 11 inch translate
+	    270 rotate
+	} ifelse
+
+	/sideA1 where { pop /cutline where { pop cutline } if sideA1 cvx exec
+	/cutline where { pop cutline } if }if
+	/slideA where {pop slideA cvx exec
+	/cutline where { pop cutline } if } if
+	/sideA2 where { pop sideA2 cvx exec /cutline where { pop cutline } if }if
+	/circular where {
+	    pop
+	    circular 4.5 inch  lt {
+		0 0 circular sub 5 mm sub translate
+		/curline circular 2 div def
+	    }
+	    {
+		showpage
+		8.5 inch 2 div 11 inch circular 2 div sub .25 sub translate
+		/curline circular 2 div def
+	    } ifelse
+	} {
+	    /curline 5 mm -=
+	} ifelse
+	/sideB1 where { pop /cutline where { pop cutline } if sideB1 cvx exec
+	/cutline where { pop cutline } if } if
+	/slideB where { pop slideB cvx exec
+	/cutline where { pop cutline } if } if
+	/sideB2 where { pop sideB2 cvx exec /cutline where { pop cutline } if } if
+	grestore
+	showpage
+      end
+    end
+} def
+/hline {
+    newpath
+    /circular where {
+	pop
+	0 0 curline 0 360 arc .1 setlinewidth
+    } {
+	scalestart curline moveto
+	scalelen 0 rlineto .1 setlinewidth
+    } ifelse stroke
+} def
+/fullcutlines {
+    /cutline {
+	/circular where {
+	    pop
+	    newpath 0 0 curline 0 360 arc
+	    .1 setlinewidth
+	    stroke
+	} {
+	    newpath .25 inch curline moveto
+	    10.5 inch  0 rlineto
+	    .1 setlinewidth
+	    stroke
+	} ifelse
+    } def
+} def
+
+/partialcutlines {
+    /cutline {newpath 0 curline moveto
+	scalestart 10 mm sub curline lineto
+	.1 setlinewidth stroke
+	newpath 11 inch curline moveto
+	scaleend 10 mm add curline lineto
+	.1 setlinewidth stroke
+    } def
+} def
+
+/nocutlines {
+    /cutline {} def
+} def
+
+
+definerules
+printrules
